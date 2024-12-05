@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.appName }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{ end }}
+  selector:
+    matchLabels:
+      app: {{ .Values.appName }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.appName }}
+      annotations:
+        rollme: {{ randAlphaNum 5 | quote }}
+        {{- if .Values.podAnnotations }}
+        {{ toYaml .Values.podAnnotations | indent 8}}
+        {{- end }}
+    spec:
+      containers:
+      - name: {{ .Values.appName }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+        - name: http
+          containerPort: {{ .Values.service.port }}
+          protocol: TCP
+        resources:
+          {{- toYaml .Values.resources | nindent 12 }}
+        env:
+        {{- range $key, $val := .Values.env_vars.data }}
+        - name: {{ $key }}
+          value: {{ $val | quote }}
+        {{- end }}
+        {{- range .Values.externalsecrets.data}}
+        - name: {{ .nameValue}}
+          valueFrom:
+            secretKeyRef:
+              name: {{ $.Values.appName }}-external-secrets
+              key: {{ .nameValue}}
+        {{- end }}

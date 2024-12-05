@@ -1,0 +1,10 @@
+.git/
+helm/
+dev/
+.history/
+reports/
+Jenkinsfile
+README.md
+.gitignore
+*.png
+

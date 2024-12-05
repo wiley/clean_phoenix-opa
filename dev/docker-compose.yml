@@ -1,0 +1,31 @@
+version: '3.7'
+
+services:
+  opa-service:
+    container_name: opa-service
+    build:
+        context: .
+    environment:
+      - USERS_API_URL=http://users-api:50103
+      - GROUPS_API_URL=http://groups-api:51112
+      - ENROLLMENTS_API_URL=http://enrollments-api:5113
+      - COMPANY_API_URL=http://company-api:80
+      - KEYCLOAK_URL=http://keycloak:8080
+      - GROUPS_API_KEY=
+      # The variable below is not yet being used within the service. It was placed because these variables were copied from the Helm file
+      - AUTHORIZATION_API_URL=http://authorization-api
+      - AUTHORIZATION_API_KEY=Secret
+      - ENROLLMENTS_API_KEY=Secret
+      - USERS_API_KEY=
+      - COMPANY_API_KEY=Secret
+      - LPI_API_KEY=
+    working_dir: /app
+    volumes:
+      - "../policies/:/policies/"
+    ports:
+      - 51118:8181
+
+networks:
+  default:
+    name: PL_AUTOMATION-network
+    external: true

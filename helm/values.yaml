@@ -1,0 +1,20 @@
+# Default values for phoenix-opa-api
+# This file is in YAML format
+# Declared variables to be passed into $/templates files
+
+appName: opa
+
+imagePullSecrets: []
+
+service:
+  type: NodePort
+  port: 80
+  targetPort: 8181
+
+ingress:
+  external:
+    sslRedirect: "false"
+    forceSslRedirect: "true"
+
+# replicaCount has no impact if autoscaling.enabled = true
+replicaCount: 1

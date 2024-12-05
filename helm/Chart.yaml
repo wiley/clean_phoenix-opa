@@ -1,0 +1,5 @@
+apiVersion: v2
+appVersion: "undef"
+description: Helm Chart for darwin-opa
+name: opa
+version: 0.0.1
