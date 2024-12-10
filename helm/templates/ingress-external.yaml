@@ -1,0 +1,26 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ .Values.appName }}-external
+  namespace: {{ .Release.Namespace }}
+  annotations:
+
+    external-dns.alpha.kubernetes.io/cloudflare-proxied: "true"
+    external-dns.alpha.kubernetes.io/hostname: {{ .Values.appName }}.{{ .Values.dns.external }}
+    ingress.kubernetes.io/ssl-redirect:  "{{ .Values.ingress.external.sslRedirect }}"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "{{ .Values.ingress.external.forceSslRedirect }}"
+    nginx.ingress.kubernetes.io/proxy-body-size: 10m
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: {{ .Values.appName }}.{{ .Values.dns.external }}
+    http:
+      paths:
+      - pathType: Prefix
+        path: /
+        backend:
+          service:
+            name: {{ .Values.appName }}
+            port:
+              number: 80

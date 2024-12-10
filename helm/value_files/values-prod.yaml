@@ -1,0 +1,73 @@
+# This file is in YAML format
+# Declared variables to be passed into $/templates files
+namespace: phoenix-prod
+
+image:
+  repository: 988207228673.dkr.ecr.eu-central-1.amazonaws.com/phoenix-opa
+  tag: prod
+  pullPolicy: Always
+
+ingress:
+  external:
+    sslRedirect: "false"
+    forceSslRedirect: "false"
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 200m
+    memory: 100Mi
+
+# replicacount has no impact if autoscaling.enabled = true
+autoscaling:
+  enabled: true
+  minReplicas: 1
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 70
+  targetMemoryUtilizationPercentage: 85
+
+
+dns:
+  internal: prod.sgp.private.wiley.host
+  external: prod.sgp.wiley.host
+
+env_vars:
+  data:
+    USERS_API_URL: "http://users-api"
+    GROUPS_API_URL: "http://groups-api"
+    ENROLLMENTS_API_URL: "http://enrollments-api"
+    COMPANY_API_URL: "http://company-api"
+    AUTHORIZATION_API_URL: "http://authorization-api"
+    CONTENTS_API_URL: "http://contents-api"
+    KEYCLOAK_URL: "https://keycloak.prod.sgp.wiley.host"
+    LPI_API_URL: "https://lpi-api.prod.sgp.wiley.host"
+
+externalsecrets:
+  refreshInterval: 1m
+  secretCreationPolicy: Owner
+  secretStoreName: eks-prod-eu-secret-manager
+  secretStoreType: ClusterSecretStore
+  data:
+  - keyValue: eks/phoenix
+    nameValue: USERS_API_KEY
+    propertyValue: USERS_API_KEY
+  - keyValue: eks/phoenix
+    nameValue: COMPANY_API_KEY
+    propertyValue: COMPANY_API_KEY
+  - keyValue: eks/phoenix
+    nameValue: LPI_API_KEY
+    propertyValue: LPI_API_KEY
+  - keyValue: eks/phoenix
+    nameValue: AUTHORIZATION_API_KEY
+    propertyValue: AUTHORIZATION_API_KEY
+  - keyValue: eks/phoenix
+    nameValue: CONTENTS_API_KEY
+    propertyValue: CONTENTS_API_KEY
+  - keyValue: eks/phoenix
+    nameValue: GROUPS_API_KEY
+    propertyValue: GROUPS_API_KEY
+  - keyValue: eks/phoenix
+    nameValue: ENROLLMENTS_API_KEY
+    propertyValue: ENROLLMENTS_API_KEY

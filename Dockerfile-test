@@ -1,0 +1,13 @@
+FROM python:3.11.10-alpine3.20
+
+
+WORKDIR /app
+COPY ./entrypointTest.sh .
+COPY ./policies ./policies
+
+ADD https://openpolicyagent.org/downloads/v0.59.0/opa_linux_amd64_static opa
+ADD https://raw.githubusercontent.com/open-policy-agent/contrib/main/junit/opa_test_to_junit.py opa_test_to_junit.py
+RUN chmod 755 opa_test_to_junit.py opa ;\
+    mkdir -p reports
+
+ENTRYPOINT ["./entrypointTest.sh"]

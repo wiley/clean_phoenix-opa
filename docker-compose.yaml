@@ -1,0 +1,10 @@
+version: '3.7'
+
+services:
+  opa:
+    build:
+      context: .
+    env_file:
+      - nonprod.env
+    ports:
+      - 8181:8181
